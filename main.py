@@ -22,7 +22,7 @@ import requests
 from config import TOKEN, NOWPAYMENTS_API_KEY, USDT_TRC20, USDT_BEP20
 
 logging.basicConfig(
-    format='%(asctime)s — %(name)s — %(levelname)s — %(message)s',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
 )
 
@@ -54,7 +54,7 @@ animals = [
     {"emoji": "🦁", "name": "Leão", "price": 100000, "per_hour": 25000}
 ]
 
-# COMANDO /start DO BOT
+# COMANDOS DO BOT
 def start(update: Update, context: CallbackContext) -> None:
     user_id = str(update.effective_user.id)
 
@@ -69,24 +69,30 @@ def start(update: Update, context: CallbackContext) -> None:
     keyboard = [
         [InlineKeyboardButton("🐾 Comprar Animais", callback_data='buy_animals')],
         [InlineKeyboardButton("💰 Ver Saldo", callback_data='check_balance')],
-        [InlineKeyboardButton("📊 Planos de Barras", callback_data='view_plans')],
-        [InlineKeyboardButton("💵 Depositar", callback_data='deposit')]
+        [InlineKeyboardButton("🏅 Planos de Barras", callback_data='view_plans')],
+        [InlineKeyboardButton("💳 Depositar", callback_data='deposit')]
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text("🐮 Bem-vindo à sua Fazenda Feliz!\nEscolha uma opção abaixo:", reply_markup=reply_markup)
+    update.message.reply_text("🐮 Bem-vindo à sua Fazenda Feliz! Escolha uma opção:", reply_markup=reply_markup)
 
-# Função para salvar os dados em JSON
+# FUNÇÃO PARA SALVAR OS DADOS
 def save_data():
     with open(DATA_FILE, 'w') as f:
         json.dump(users_data, f, indent=4)
 
-# CONFIGURAÇÃO DO BOT
+# AQUI VÃO OS OUTROS HANDLERS QUE VOCÊ VAI IMPLEMENTAR
+# (buy_animals, check_balance, view_plans, deposit, etc.)
+
+# MAIN — INICIALIZAÇÃO DO BOT
 def main():
     updater = Updater(TOKEN)
     dispatcher = updater.dispatcher
 
-    dispatcher.add_handler(CommandHandler('start', start))
+    dispatcher.add_handler(CommandHandler("start", start))
+
+    # Aqui você pode adicionar os outros handlers que faltam
+    # dispatcher.add_handler(CallbackQueryHandler(sua_funcao_aqui))
 
     updater.start_polling()
     updater.idle()
