@@ -1,5 +1,5 @@
 # ================================
-# Feliz Fazenda Bot – main.py
+# Feliz Fazenda Bot — main.py
 # ================================
 
 import logging
@@ -22,9 +22,10 @@ import requests
 from config import TOKEN, NOWPAYMENTS_API_KEY, USDT_TRC20, USDT_BEP20
 
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format='%(asctime)s — %(name)s — %(levelname)s — %(message)s',
     level=logging.INFO
 )
+
 logger = logging.getLogger(__name__)
 
 DATA_FILE = 'users_data.json'
@@ -53,9 +54,10 @@ animals = [
     {"emoji": "🦁", "name": "Leão", "price": 100000, "per_hour": 25000}
 ]
 
-# COMANDOS DO BOT
+# COMANDO /start DO BOT
 def start(update: Update, context: CallbackContext) -> None:
     user_id = str(update.effective_user.id)
+
     if user_id not in users_data:
         users_data[user_id] = {
             "bars": 0,
@@ -67,9 +69,27 @@ def start(update: Update, context: CallbackContext) -> None:
     keyboard = [
         [InlineKeyboardButton("🐾 Comprar Animais", callback_data='buy_animals')],
         [InlineKeyboardButton("💰 Ver Saldo", callback_data='check_balance')],
-        [InlineKeyboardButton("📈 Planos de Barras", callback_data='view_plans')],
-        [InlineKeyboardButton("💎 Depositar", callback_data='deposit')]
+        [InlineKeyboardButton("📊 Planos de Barras", callback_data='view_plans')],
+        [InlineKeyboardButton("💵 Depositar", callback_data='deposit')]
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_t_
+    update.message.reply_text("🐮 Bem-vindo à sua Fazenda Feliz!\nEscolha uma opção abaixo:", reply_markup=reply_markup)
+
+# Função para salvar os dados em JSON
+def save_data():
+    with open(DATA_FILE, 'w') as f:
+        json.dump(users_data, f, indent=4)
+
+# CONFIGURAÇÃO DO BOT
+def main():
+    updater = Updater(TOKEN)
+    dispatcher = updater.dispatcher
+
+    dispatcher.add_handler(CommandHandler('start', start))
+
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
